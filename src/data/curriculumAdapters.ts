@@ -4,6 +4,331 @@ import { OFFICIAL_SECTIONS, SENTENCE_PUZZLES, WORD_MATCH_PAIRS } from './curricu
 // Helper to generate full 20-scenario multilingual dictionary
 export const MULTILINGUAL_SECTIONS: Record<string, Partial<LessonSection>[]> = {
   // ==========================================
+  // 0. ENGLISH (en) - Complete 20 Scenarios
+  //
+  // OFFICIAL_SECTIONS already carries English vocabulary and dialogue openers,
+  // but its titles, contexts, roles, and quiz prompts are written in Uzbek —
+  // they were authored as the scaffolding an Uzbek speaker reads. Every other
+  // target language replaces that scaffolding with its own, so English needs
+  // the same treatment or it is the one language that still reads as Uzbek.
+  // Vocabulary `translation` stays Uzbek everywhere: that is the learner gloss.
+  // ==========================================
+  en: [
+    {
+      section_id: 1,
+      title: "Greetings & Introductions",
+      scenario_context: "Introducing yourself to a new circle of friends or at a formal meeting, and speaking politely about your profession and background.",
+      ai_role: "A friendly colleague you have just met",
+      user_role: "A professional / learner introducing themselves",
+      mini_quiz: [
+        {
+          question: "What does the phrase 'Nice to meet you' express?",
+          options: ["Xayr, salomat bo'ling", "Tanishganimdan juda xursandman", "Qayerdansiz?", "Iltimos, yordam bering"],
+          correct_answer: 1,
+          explanation: "'Nice to meet you' yangi inson bilan uchrashganda mehmondo'stlik va samimiyat belgisidir."
+        },
+        {
+          question: "Which grammatical structure do you use to state your profession?",
+          options: ["I have a student", "I am a [Profession]", "I do engineer", "I stay doctor"],
+          correct_answer: 1,
+          explanation: "'I am a...' (Men ... man) shaxsiy kasb va rolni to'g'ri ifodalash formulasidir."
+        }
+      ]
+    },
+    {
+      section_id: 2,
+      title: "Bargaining at the Market",
+      scenario_context: "Buying freshly picked melons, raisins, and dried fruit at a historic bazaar, and haggling warmly with the vendor.",
+      ai_role: "A cheerful, quick-witted fruit seller at the bazaar",
+      user_role: "A shopper visiting the market",
+      mini_quiz: [
+        {
+          question: "Which phrase best asks a vendor to lower the price?",
+          options: ["Could you give a discount?", "Bring me the bill immediately", "I don't like it", "Where is the airport?"],
+          correct_answer: 0,
+          explanation: "'Could you give a discount?' xushmuomalalik bilan narxni kelishish jumlasi hisoblanadi."
+        },
+        {
+          question: "What does 'Can I taste it?' mean?",
+          options: ["Buni tekinga olsam bo'ladimi?", "Totib ko'rsam bo'ladimi?", "Tortib bering", "Qaytim bering"],
+          correct_answer: 1,
+          explanation: "'Taste' so'zi ta'mini tatib ko'rish ma'nosini anglatadi."
+        }
+      ]
+    },
+    {
+      section_id: 3,
+      title: "Airport & Passport Control",
+      scenario_context: "Answering a passport control officer's questions after landing at an international airport, and explaining your visa and the purpose of your trip.",
+      ai_role: "A senior airport passport control inspector",
+      user_role: "A professional arriving for a conference or holiday",
+      mini_quiz: [
+        {
+          question: "What does 'Purpose of visit' refer to?",
+          options: ["Sayohat xarajati", "Tashrif maqsadi", "Yashash manzili", "Parvoz davomiyligi"],
+          correct_answer: 1,
+          explanation: "'Purpose of visit' — safar maqsadi demakdir."
+        }
+      ]
+    },
+    {
+      section_id: 4,
+      title: "Ordering a Taxi",
+      scenario_context: "Getting into a taxi downtown, explaining your destination, pointing out the shortest route on the map, and settling how you will pay.",
+      ai_role: "A polite taxi driver who knows the city well",
+      user_role: "A passenger hurrying to a meeting",
+      mini_quiz: [
+        {
+          question: "What does 'Keep the change' mean?",
+          options: ["Qaytimni bering", "Qaytimi qolsin / kerak emas", "Tezroq haydang", "To'xtating"],
+          correct_answer: 1,
+          explanation: "'Keep the change' haydovchiga qaytimni minnatdorchilik sifatida qoldirishda ishlatiladi."
+        }
+      ]
+    },
+    {
+      section_id: 5,
+      title: "Hotel Check-in",
+      scenario_context: "Checking in at a modern hotel and asking about the Wi-Fi password, the gym, and breakfast hours.",
+      ai_role: "The hotel's head receptionist",
+      user_role: "A traveller or business guest with a reservation",
+      mini_quiz: [
+        {
+          question: "What is the process of registering on arrival at a hotel called?",
+          options: ["Check-out", "Check-in", "Room-service", "Boarding"],
+          correct_answer: 1,
+          explanation: "'Check-in' mehmonxonaga kirib joylashish jarayonini bildiradi."
+        }
+      ]
+    },
+    {
+      section_id: 6,
+      title: "Ordering at a Restaurant",
+      scenario_context: "Booking a table at a popular restaurant, asking what is in the local and European dishes, and requesting the bill.",
+      ai_role: "A senior waiter at the restaurant",
+      user_role: "A guest choosing a good dinner",
+      mini_quiz: [
+        {
+          question: "What does 'Chef specials' mean?",
+          options: ["Arzon taomlar", "Bosh oshpazning maxsus tavsiyasi", "Ichimliklar", "Bolalar menyusi"],
+          correct_answer: 1,
+          explanation: "'Chef specials' restorandagi eng mashhur va oshpaz tomonidan tayyorlangan maxsus taomlardir."
+        }
+      ]
+    },
+    {
+      section_id: 7,
+      title: "Asking for Directions",
+      scenario_context: "Asking passers-by how to reach the nearest metro station, tech hub, or historic square in an unfamiliar city.",
+      ai_role: "A helpful passer-by who knows the city",
+      user_role: "A traveller using a map",
+      mini_quiz: [
+        {
+          question: "What does 'within walking distance' mean?",
+          options: ["Faqat taksida boriladi", "Piyoda yetib olsa bo'ladigan masofada", "Juda uzoqda", "Yopiq hudud"],
+          correct_answer: 1,
+          explanation: "'Walking distance' piyoda yurish uchun qulay yaqinlikni bildiradi."
+        }
+      ]
+    },
+    {
+      section_id: 8,
+      title: "Doctor's Visit & Pharmacy",
+      scenario_context: "Describing your symptoms clearly when you feel unwell, and consulting a doctor about blood pressure or medication.",
+      ai_role: "A doctor at an international clinic (Dr. Emily)",
+      user_role: "A patient seeking medical help",
+      mini_quiz: [
+        {
+          question: "What does 'prescription' mean in a medical context?",
+          options: ["Kasalxona to'lovi", "Shifokor retsepti", "Tana harorati", "Operatsiya"],
+          correct_answer: 1,
+          explanation: "'Prescription' shifokor tomonidan dorilarni berish uchun yozilgan rasmiy retseptdir."
+        }
+      ]
+    },
+    {
+      section_id: 9,
+      title: "Modern IT Job Interview",
+      scenario_context: "Taking a technical interview for a Frontend/Full-Stack engineering role at an international company, and defending your architecture and past projects.",
+      ai_role: "The CTO of a global IT company (lead interviewer)",
+      user_role: "A candidate for a senior developer role",
+      mini_quiz: [
+        {
+          question: "What does 'scalable' specifically mean in software engineering?",
+          options: ["Kichik hajmli", "Yuklama oshganda kengaya oladigan (Scalable)", "Eski texnologiya", "Xavfsiz bo'lmagan"],
+          correct_answer: 1,
+          explanation: "'Scalable' tizim foydalanuvchilar soni oshganda ham barqaror ishlay olish qobiliyatini anglatadi."
+        }
+      ]
+    },
+    {
+      section_id: 10,
+      title: "Shopping for Clothes",
+      scenario_context: "Choosing clothes in a brand store, asking for the fitting room, and comparing colours and sizes.",
+      ai_role: "A modern in-store stylist and adviser",
+      user_role: "A customer buying new clothes",
+      mini_quiz: [
+        {
+          question: "What is a 'fitting room' used for?",
+          options: ["Kassa stoli", "Kiyib ko'rish xonasi", "Omborxona", "Poyabzal bo'limi"],
+          correct_answer: 1,
+          explanation: "'Fitting room' kiyimning qanday yarashishini tekshirish uchun mo'ljallangan xonadir."
+        }
+      ]
+    },
+    {
+      section_id: 11,
+      title: "Public Transport",
+      scenario_context: "Using a transport card on the metro or bus, checking the stops along the way, and reaching your destination.",
+      ai_role: "A fellow passenger or transport inspector",
+      user_role: "A commuter travelling across the city",
+      mini_quiz: [
+        {
+          question: "What does 'transfer to another line' mean?",
+          options: ["Boshqa yo'nalishga o'tish", "Chipta sotib olish", "Oxirgi bekat", "Taksi chaqirish"],
+          correct_answer: 0,
+          explanation: "'Transfer' metro yoki avtobus yo'nalishlarini almashtirishni anglatadi."
+        }
+      ]
+    },
+    {
+      section_id: 12,
+      title: "Ordering Coffee at a Cafe",
+      scenario_context: "Asking a barista for a cappuccino or a roasted-bean coffee with almond milk, and finding a comfortable spot to work.",
+      ai_role: "A skilled barista (Barista Sam)",
+      user_role: "A customer looking for coffee and a good workspace",
+      mini_quiz: [
+        {
+          question: "What is the question 'Dine-in or takeaway?' asking?",
+          options: ["Sovuqmi yoki issiqmi?", "Shu yerda ichasizmi yoki olib ketasizmi?", "Kattami yoki kichikmi?", "Shirinmi yoki achchiqmi?"],
+          correct_answer: 1,
+          explanation: "'Dine-in' joyida o'tirish, 'Takeaway' olib ketishni bildiradi."
+        }
+      ]
+    },
+    {
+      section_id: 13,
+      title: "Emergency & Help",
+      scenario_context: "Communicating quickly and precisely with emergency services when documents are lost or you need an ambulance or the police.",
+      ai_role: "An emergency dispatch operator (911/112)",
+      user_role: "A citizen calling for urgent help",
+      mini_quiz: [
+        {
+          question: "What does 'Stay calm, help is on the way' tell the caller?",
+          options: ["Xavf tugadi", "Xotirjam bo'ling, yordam yo'lda", "Hujjatlaringizni bering", "Kutish shart emas"],
+          correct_answer: 1,
+          explanation: "Bu jumla favqulodda xizmat xodimi tomonidan tinchlantirish va yordam kelayotganini bildirishda aytiladi."
+        }
+      ]
+    },
+    {
+      section_id: 14,
+      title: "Talking about Weather",
+      scenario_context: "Chatting with international friends or colleagues about today's sunny or rainy weather and your plans for the weekend.",
+      ai_role: "A cheerful colleague making conversation (Anvar)",
+      user_role: "Someone making small talk",
+      mini_quiz: [
+        {
+          question: "What does 'weather forecast' mean?",
+          options: ["Ob-havo ma'lumoti / bashorati", "Fasl almashinuvi", "Yomg'irli kun", "Termometr"],
+          correct_answer: 0,
+          explanation: "'Weather forecast' kelgusi kunlardagi ob-havo ma'lumotini bildiradi."
+        }
+      ]
+    },
+    {
+      section_id: 15,
+      title: "Bank & Currency Exchange",
+      scenario_context: "Checking exchange rates at a bank branch, opening an international payment card, and making secure transfers.",
+      ai_role: "A bank adviser for international operations",
+      user_role: "A customer handling currency transactions",
+      mini_quiz: [
+        {
+          question: "What is a 'multi-currency account'?",
+          options: ["Faqat naqd pul hisobi", "Bir nechta valyutada ishlaydigan hisob raqami", "Kredit qarzi", "Yopiq depozit"],
+          correct_answer: 1,
+          explanation: "'Multi-currency account' bir nechta xalqaro valyutalarni birgalikda saqlash imkonini beradi."
+        }
+      ]
+    },
+    {
+      section_id: 16,
+      title: "Discussing Movies with Friends",
+      scenario_context: "Watching a new sci-fi or drama release and eagerly analysing the acting and the plot twists afterwards.",
+      ai_role: "A friend who loves cinema and the arts (Sardor)",
+      user_role: "A film fan sharing impressions",
+      mini_quiz: [
+        {
+          question: "What is a 'plot twist'?",
+          options: ["Kutilmagan syujet burilishi", "Oddiy zerikarli yakun", "Film davomiyligi", "Chipta narxi"],
+          correct_answer: 0,
+          explanation: "'Plot twist' voqealar rivojining kutilmaganda boshqa tomonga o'zgarishidir."
+        }
+      ]
+    },
+    {
+      section_id: 17,
+      title: "Hobbies & Interests",
+      scenario_context: "Talking about what you do in your free time — hiking, photography, reading, instruments, and creative work.",
+      ai_role: "A creative conversation partner with wide interests (Laylo)",
+      user_role: "Someone describing their favourite pastimes",
+      mini_quiz: [
+        {
+          question: "What does it mean to 'unwind after work'?",
+          options: ["Ishdan so'ng dam olish / charchoqni chiqarish", "Qo'shimcha ish qilish", "Erta turish", "Uchrashuv belgilash"],
+          correct_answer: 0,
+          explanation: "'Unwind' ruhiy va jismoniy dam olish hamda sokinlikka erishish demakdir."
+        }
+      ]
+    },
+    {
+      section_id: 18,
+      title: "Family & Holidays",
+      scenario_context: "Setting a traditional table for national holidays such as Navruz, Eid, or New Year, welcoming guests and offering warm wishes.",
+      ai_role: "A hospitable host welcoming you home (Gulnora opa)",
+      user_role: "An honoured guest invited to the holiday table",
+      mini_quiz: [
+        {
+          question: "What does 'warm hospitality' describe?",
+          options: ["Sovuq munosabat", "Iliq va samimiy mehmondo'stlik", "Qimmat taom", "Kech qolish"],
+          correct_answer: 1,
+          explanation: "'Warm hospitality' mehmonga ko'rsatiladigan samimiy ehtirom va g'amxo'rlikdir."
+        }
+      ]
+    },
+    {
+      section_id: 19,
+      title: "Sports & Fitness",
+      scenario_context: "Building a personal training plan with a professional coach at the gym, eating well, and tracking your results.",
+      ai_role: "The gym's head coach (Coach Alex)",
+      user_role: "Someone starting a healthier lifestyle",
+      mini_quiz: [
+        {
+          question: "What should you do when you 'warm up before a workout'?",
+          options: ["Uxlab olish", "Tana va mushaklarni qizdirish (Warm up)", "Ko'p ovqat yeyish", "Mashqni tugatish"],
+          correct_answer: 1,
+          explanation: "'Warm up' jarohatlarning oldini olish uchun mushaklarni tayyorlashdir."
+        }
+      ]
+    },
+    {
+      section_id: 20,
+      title: "Daily Workplace Chat",
+      scenario_context: "Agreeing on project status, weekly sprint plans, and deadlines with colleagues at an international company.",
+      ai_role: "A project manager / team lead (Kamola)",
+      user_role: "A lead specialist on the team",
+      mini_quiz: [
+        {
+          question: "What does 'delivering ahead of the deadline' mean?",
+          options: ["Kech qolgan vazifalar", "Vazifalarni muddatidan oldin muvaffaqiyatli topshirish", "Bekor qilingan loyiha", "Tanaffus"],
+          correct_answer: 1,
+          explanation: "Belgilangan deadline muddatidan avval natijalarni muvaffaqiyatli yetkazish demakdir."
+        }
+      ]
+    }
+  ],
+
+  // ==========================================
   // 1. JAPANESE (日本語 - ja) - Complete 20 Scenarios
   // ==========================================
   ja: [
@@ -793,6 +1118,8 @@ export function getCurriculumCoverage(targetLanguageCode: string): CurriculumCov
   const code = normalizeLangCode(targetLanguageCode);
   const total = OFFICIAL_SECTIONS.length;
 
+  // English vocabulary ships in the base sections, so an English learner is
+  // never shown untranslated content even if an override entry is missing.
   if (code === BASE_CONTENT_LANGUAGE) {
     return {
       code,
@@ -826,12 +1153,15 @@ export function getAdaptedCurriculum(
   _level?: string
 ): LessonSection[] {
   const code = normalizeLangCode(targetLanguageCode);
+  const merged = mergeCurriculumOverrides(OFFICIAL_SECTIONS, collectOverrides(code));
 
+  // The base sections already teach English, so every section counts as
+  // localized for an English learner even where an override is absent.
   if (code === BASE_CONTENT_LANGUAGE) {
-    return OFFICIAL_SECTIONS.map((sec) => ({ ...sec, is_localized: true }));
+    return merged.map((sec) => ({ ...sec, is_localized: true }));
   }
 
-  return mergeCurriculumOverrides(OFFICIAL_SECTIONS, collectOverrides(code));
+  return merged;
 }
 
 function mergeCurriculumOverrides(

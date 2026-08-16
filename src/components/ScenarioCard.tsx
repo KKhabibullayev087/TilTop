@@ -27,7 +27,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { LessonSection, LanguageCode, UserProfile } from '../types';
-import { useI18n } from '../utils/i18n';
+import { useI18n, translateCategory, translateDifficulty, translateDuration } from '../utils/i18n';
 
 interface ScenarioCardProps {
   section: LessonSection;
@@ -94,10 +94,10 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
           </span>
           <span className="min-w-0">
             <span className="block text-[11px] font-medium text-ink-subtle tabular-nums">
-              #{section.section_id} · {section.category}
+              #{section.section_id} · {translateCategory(t, section.category)}
             </span>
             <span className="block text-[11px] text-ink-subtle">
-              {DIFFICULTY_LABEL[section.difficulty] || section.difficulty}
+              {DIFFICULTY_LABEL[section.difficulty] || translateDifficulty(t, section.difficulty)}
             </span>
           </span>
         </div>
@@ -155,7 +155,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
         <div className="flex items-center gap-3 text-[11px] text-ink-subtle mb-3">
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {section.duration}
+            {translateDuration(t, section.duration)}
           </span>
           <span className="tabular-nums">+{section.xp_reward} XP</span>
         </div>

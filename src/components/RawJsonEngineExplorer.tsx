@@ -16,7 +16,7 @@ import {
 import { LessonSection, UserProfile } from '../types';
 import { OFFICIAL_SECTIONS, COUNTRY_LANGUAGES, PROFESSION_OPTIONS } from '../data/curriculum';
 import { CustomDropdown } from './CustomDropdown';
-import { useI18n } from '../utils/i18n';
+import { useI18n, translateCategory, translateDifficulty } from '../utils/i18n';
 
 interface RawJsonEngineExplorerProps {
   targetLanguage: string;
@@ -101,8 +101,8 @@ export const RawJsonEngineExplorer: React.FC<RawJsonEngineExplorerProps> = ({
   const scenarioOptions = OFFICIAL_SECTIONS.map((sec) => ({
     value: String(sec.section_id),
     label: `#${sec.section_id}. ${sec.title}`,
-    sublabel: sec.category,
-    badge: sec.difficulty,
+    sublabel: translateCategory(t, sec.category),
+    badge: translateDifficulty(t, sec.difficulty),
   }));
 
   return (

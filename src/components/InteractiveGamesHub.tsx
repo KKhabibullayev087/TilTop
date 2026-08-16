@@ -26,7 +26,7 @@ import {
   PROFESSION_OPTIONS 
 } from '../data/curriculum';
 import { getAdaptedCurriculum, getAdaptedSentencePuzzles } from '../data/curriculumAdapters';
-import { useI18n } from '../utils/i18n';
+import { useI18n, translateCategory, translateDifficulty } from '../utils/i18n';
 import { playAzureNeuralTts, stopAzureAudio } from '../utils/audioPlayer';
 import { CustomDropdown } from './CustomDropdown';
 
@@ -324,8 +324,8 @@ export const InteractiveGamesHub: React.FC<InteractiveGamesHubProps> = ({
   const scenarioDropdownOptions = adaptedSections.map((sec) => ({
     value: String(sec.section_id),
     label: `#${sec.section_id}. ${sec.title}`,
-    sublabel: sec.category,
-    badge: sec.difficulty,
+    sublabel: translateCategory(t, sec.category),
+    badge: translateDifficulty(t, sec.difficulty),
   }));
 
   return (

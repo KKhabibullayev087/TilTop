@@ -9,7 +9,7 @@ import {
   Globe,
   Check,
 } from 'lucide-react';
-import { useI18n, INITIAL_UI_LANGUAGES } from '../utils/i18n';
+import { useI18n, INITIAL_UI_LANGUAGES, translateCategory } from '../utils/i18n';
 import { COUNTRY_LANGUAGES, OFFICIAL_SECTIONS, PROFESSION_OPTIONS } from '../data/curriculum';
 import { LanguagePicker } from './LanguagePicker';
 import { WordFloatBackdrop } from './WordFloatBackdrop';
@@ -249,7 +249,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn
               </span>
               <span className="min-w-0">
                 <span className="block text-sm font-medium text-ink truncate">{sec.title}</span>
-                <span className="block text-xs text-ink-subtle truncate">{sec.category}</span>
+                <span className="block text-xs text-ink-subtle truncate">{translateCategory(t, sec.category)}</span>
               </span>
             </div>
           ))}

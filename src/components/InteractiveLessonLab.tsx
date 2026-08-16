@@ -32,7 +32,7 @@ import {
   PROFICIENCY_OPTIONS 
 } from '../data/curriculum';
 import { playAzureNeuralTts, stopAzureAudio } from '../utils/audioPlayer';
-import { useI18n } from '../utils/i18n';
+import { useI18n, translateCategory } from '../utils/i18n';
 
 interface InteractiveLessonLabProps {
   section: LessonSection;
@@ -244,7 +244,7 @@ export const InteractiveLessonLab: React.FC<InteractiveLessonLabProps> = ({
                 #{section.section_id}
               </span>
               <span className="text-xs font-bold text-ink-muted uppercase">
-                {section.category}
+                {translateCategory(t, section.category)}
               </span>
             </div>
             <h2 className="text-lg sm:text-xl font-semibold text-ink leading-tight mt-0.5">
