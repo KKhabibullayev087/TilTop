@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import {
@@ -77,7 +76,7 @@ function recordFailure(email: string): void {
   entry.count += 1;
 }
 
-app.post("/api/auth/register", (req, res) => {
+app.post("/api/auth/register", async (req, res) => {
   try {
     const { email, name, password } = req.body || {};
 
@@ -86,7 +85,7 @@ app.post("/api/auth/register", (req, res) => {
       return res.status(400).json({ error: invalid });
     }
 
-    const user = createUser(email, name, password);
+    const user = await createUser(email, name, password);
     res.status(201).json({ user: toPublicUser(user), token: issueToken(user.id) });
   } catch (error: any) {
     if (error?.message === "EMAIL_TAKEN") {
@@ -97,7 +96,7 @@ app.post("/api/auth/register", (req, res) => {
   }
 });
 
-app.post("/api/auth/login", (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body || {};
 
@@ -112,7 +111,7 @@ app.post("/api/auth/login", (req, res) => {
       });
     }
 
-    const user = authenticate(email, password);
+    const user = await authenticate(email, password);
     if (!user) {
       recordFailure(email);
       // Same message for unknown email and wrong password — do not disclose
@@ -128,19 +127,24 @@ app.post("/api/auth/login", (req, res) => {
   }
 });
 
-app.get("/api/auth/me", requireAuth, (req: AuthedRequest, res) => {
-  const user = findUserById(req.userId!);
-  if (!user) {
-    return res.status(404).json({ error: "Foydalanuvchi topilmadi." });
+app.get("/api/auth/me", requireAuth, async (req: AuthedRequest, res) => {
+  try {
+    const user = await findUserById(req.userId!);
+    if (!user) {
+      return res.status(404).json({ error: "Foydalanuvchi topilmadi." });
+    }
+    res.json({ user: toPublicUser(user) });
+  } catch (error: any) {
+    console.error("Error in /api/auth/me:", error);
+    res.status(500).json({ error: "Foydalanuvchini o'qishda xatolik." });
   }
-  res.json({ user: toPublicUser(user) });
 });
 
 // Persists profile/progress server-side so it follows the account across devices.
-app.put("/api/auth/state", requireAuth, (req: AuthedRequest, res) => {
+app.put("/api/auth/state", requireAuth, async (req: AuthedRequest, res) => {
   try {
     const { profile, progress } = req.body || {};
-    const updated = saveUserState(req.userId!, { profile, progress });
+    const updated = await saveUserState(req.userId!, { profile, progress });
     if (!updated) {
       return res.status(404).json({ error: "Foydalanuvchi topilmadi." });
     }
@@ -705,9 +709,18 @@ Return a JSON object with a "sections" array containing one entry per section_id
   }
 });
 
-// Vite Middleware integration
+/**
+ * On Vercel the app is imported by api/index.ts and driven as a serverless
+ * function: no listener, and no static serving either — the platform serves
+ * dist/ from its own CDN and only forwards /api/* here.
+ */
+const isServerless = !!process.env.VERCEL;
+
+// Vite middleware (dev) / static files (self-hosted production)
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    // Imported lazily so the serverless bundle never pulls in the dev server.
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -726,4 +739,9 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!isServerless) {
+  startServer();
+}
+
+export default app;
+export { app };

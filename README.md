@@ -87,11 +87,58 @@ npm start       # dist/server.cjs ni ishga tushiradi
 
 ---
 
+## Vercel'ga deploy qilish
+
+Loyiha Vercel'da ishlashga tayyor: `api/index.ts` Express ilovasini serverless
+funksiya sifatida eksport qiladi, `vercel.json` esa `/api/*` so'rovlarini
+o'sha yerga, qolganini `dist/` statikasiga yo'naltiradi.
+
+Bitta muhim jihat bor. **Vercel'da fayl tizimiga yozib bo'lmaydi**, shuning
+uchun `data/users.json` u yerda saqlanmaydi. Aynan shu JSON hujjat Vercel Blob
+ichida saqlanadi — tuzilishi bir xil, faqat joyi boshqa.
+
+**1. Blob store yarating**
+
+Vercel loyihangizda: `Storage` → `Create Database` → `Blob` → access **Private**
+→ loyihaga ulang. Vercel `BLOB_STORE_ID` va OIDC ma'lumotlarini o'zi qo'shadi.
+
+> Private tanlash majburiy: store ichida parol hash'lari yotadi.
+
+**2. Muhit o'zgaruvchilarini qo'shing**
+
+`Settings` → `Environment Variables`:
+
+| O'zgaruvchi | Qiymat |
+|---|---|
+| `AUTH_SECRET` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` natijasi |
+| `GEMINI_API_KEY` | Gemini kalitingiz |
+| `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION` | ixtiyoriy |
+| `MISTRAL_API_KEY` / `OPENAI_API_KEY` | ixtiyoriy |
+
+**3. Deploy qiling.** Boshqa sozlash kerak emas.
+
+### Nimalar boshqacha ishlaydi
+
+| | Lokalda | Vercel'da |
+|---|---|---|
+| Hisoblar qayerda | `data/users.json` | Blob ichidagi `tiltop/users.json` |
+| Server | doimiy Express (`:3000`) | so'rov bo'yicha serverless funksiya |
+| Statik fayllar | Express beradi | Vercel CDN beradi |
+| Login urinishlari hisoblagichi | jarayon xotirasida | har bir instance'da alohida |
+
+Oxirgi qatorga e'tibor bering: brute-force himoyasi xotirada saqlangani uchun
+serverless'da u zaifroq ishlaydi. Parol hash'lash va token tekshiruvi esa
+o'zgarishsiz qoladi.
+
+---
+
 ## Loyiha tuzilishi
 
 ```
 ├── server.ts                  Express server, AI endpointlari, Azure TTS
-├── auth.ts                    scrypt + HMAC autentifikatsiya (Node built-ins)
+├── auth.ts                    scrypt + HMAC autentifikatsiya, JSON saqlash
+├── api/index.ts               Vercel serverless kirish nuqtasi
+├── vercel.json                Vercel marshrutlari va build sozlamalari
 ├── src/
 │   ├── App.tsx                Asosiy dashboard va marshrutlash
 │   ├── types.ts               Umumiy TypeScript tiplari
