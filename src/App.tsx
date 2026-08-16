@@ -35,6 +35,7 @@ import { AddLanguageModal } from './components/AddLanguageModal';
 import { LoginPage } from './components/LoginPage';
 import { LandingPage } from './components/LandingPage';
 import { CustomDropdown } from './components/CustomDropdown';
+import { Flag } from './components/Flag';
 import { I18nProvider, useI18n } from './utils/i18n';
 import { AuthProvider, useAuth } from './utils/auth';
 
@@ -359,9 +360,11 @@ function TilTopDashboard() {
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 text-xs text-ink-muted">
-                    <span className="text-base leading-none">
-                      {userProfile.countryFlag || matchedCountry?.flag || '🌐'}
-                    </span>
+                    <Flag
+                      code={userProfile.countryFlag || matchedCountry?.flag}
+                      title={matchedCountry?.country}
+                      className="w-5 h-auto"
+                    />
                     <span className="font-medium">
                       {userProfile.targetLanguageName || matchedCountry?.languageName || userProfile.targetLanguage}
                     </span>

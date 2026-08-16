@@ -55,7 +55,7 @@ export const AddLanguageModal: React.FC<AddLanguageModalProps> = ({
 
     try {
       const result = await translateAndAddUiLanguage(customSiteLangInput.trim());
-      setUiSuccessMsg(`${result.flag} ${result.languageName} — Sayt interfeysi Gemini AI (${result.engineUsed.toUpperCase()}) orqali to'liq tarjima qilindi!`);
+      setUiSuccessMsg(`${result.languageName} — Sayt interfeysi Gemini AI (${result.engineUsed.toUpperCase()}) orqali to'liq tarjima qilindi!`);
       setCustomSiteLangInput('');
     } catch (err: any) {
       setUiErrorMsg(err.message || 'Tarjima jarayonida xatolik yuz berdi.');
@@ -97,7 +97,7 @@ export const AddLanguageModal: React.FC<AddLanguageModalProps> = ({
       };
 
       onSetupCountryLanguage(option);
-      setCountrySuccessMsg(`${option.flag} ${option.country} (${option.languageName}) — Davlat tili ustuvor qilindi va darsliklar to'liq moslashtirildi!`);
+      setCountrySuccessMsg(`${option.country} (${option.languageName}) — Davlat tili ustuvor qilindi va darsliklar to'liq moslashtirildi!`);
       setCountryQuery('');
     } catch (err: any) {
       console.error(err);
@@ -267,7 +267,7 @@ export const AddLanguageModal: React.FC<AddLanguageModalProps> = ({
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-xl">{lang.flag}</span>
+                          <Flag code={lang.flag} title={lang.name} className="w-6 h-auto" />
                           <div className="truncate">
                             <p className="text-xs font-bold truncate">{lang.name.split(' ')[0]}</p>
                             <p className="text-[10px] text-ink-subtle truncate">{lang.nativeName}</p>
@@ -362,12 +362,12 @@ export const AddLanguageModal: React.FC<AddLanguageModalProps> = ({
                       type="button"
                       onClick={() => {
                         onSetupCountryLanguage(item);
-                        setCountrySuccessMsg(`${item.flag} ${item.country} (${item.languageName}) — Davlat tili tanlandi va ustuvor qilindi!`);
+                        setCountrySuccessMsg(`${item.country} (${item.languageName}) — Davlat tili tanlandi va ustuvor qilindi!`);
                       }}
                       className="p-2.5 rounded-lg border border-line hover:border-accent-300 bg-surface hover:bg-accent-50/50 text-left flex items-center justify-between gap-2 transition-all cursor-pointer group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="text-2xl filter drop-">{item.flag}</span>
+                        <Flag code={item.flag} title={item.country} className="w-8 h-auto" />
                         <div>
                           <p className="text-xs font-bold text-ink group-hover:text-accent-700">
                             {item.country}

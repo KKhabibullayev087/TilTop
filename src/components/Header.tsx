@@ -4,6 +4,7 @@ import { UserProfile } from '../types';
 import { COUNTRY_LANGUAGES } from '../data/curriculum';
 import { useI18n } from '../utils/i18n';
 import { LanguagePicker } from './LanguagePicker';
+import { Flag } from './Flag';
 
 interface HeaderProps {
   targetLanguage: string;
@@ -158,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
                             isSelected ? 'bg-accent-50' : 'hover:bg-surface-sunken'
                           }`}
                         >
-                          <span className="text-xl leading-none flex-shrink-0">{item.flag}</span>
+                          <Flag code={item.flag} title={item.country} className="w-7 h-auto" />
                           <span className="min-w-0 flex-1">
                             <span className={`block text-xs font-medium truncate ${isSelected ? 'text-accent-700' : 'text-ink'}`}>
                               {item.country}

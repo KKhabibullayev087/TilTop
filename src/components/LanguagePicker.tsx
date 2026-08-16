@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, Globe } from 'lucide-react';
 import { useI18n } from '../utils/i18n';
+import { Flag } from './Flag';
 
 interface LanguagePickerProps {
   /** Which side the popover hangs from. */
@@ -51,7 +52,7 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({
         aria-label={t('header.site_lang', 'Sayt Tili')}
         className="flex items-center gap-2 px-2.5 py-2 rounded-lg border border-line hover:bg-surface-sunken text-sm transition-colors cursor-pointer press"
       >
-        <span className="text-base leading-none">{currentUiLang.flag}</span>
+        <Flag code={currentUiLang.flag} title={currentUiLang.name} className="w-5 h-auto" />
         {!compact && (
           <span className="hidden sm:block text-xs font-medium text-ink max-w-[90px] truncate">
             {currentUiLang.nativeName}
@@ -94,7 +95,7 @@ export const LanguagePicker: React.FC<LanguagePickerProps> = ({
                     isSelected ? 'bg-accent-50' : 'hover:bg-surface-sunken'
                   }`}
                 >
-                  <span className="text-lg leading-none flex-shrink-0">{lang.flag}</span>
+                  <Flag code={lang.flag} title={lang.name} className="w-6 h-auto" />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-1.5">
                       <span

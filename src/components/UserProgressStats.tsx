@@ -21,7 +21,8 @@ import {
   PROFESSION_OPTIONS, 
   PROFICIENCY_OPTIONS 
 } from '../data/curriculum';
-import { useI18n } from '../utils/i18n';
+import { useI18n, translateCategory } from '../utils/i18n';
+import { Flag } from './Flag';
 
 interface UserProgressStatsProps {
   userProfile: UserProfile;
@@ -101,8 +102,12 @@ export const UserProgressStats: React.FC<UserProgressStatsProps> = ({
       {/* User Profile Card */}
       <div className="bg-surface rounded-xl border border-line p-6 sm:p-8 flex flex-wrap items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-lg bg-accent-500 text-white flex items-center justify-center text-3xl font-semibold">
-            {currentCountry.flag}
+          <div className="w-16 h-16 rounded-lg border border-line bg-surface-muted flex items-center justify-center overflow-hidden">
+            <Flag
+              code={currentCountry.flag}
+              title={currentCountry.country}
+              className="w-12 h-auto"
+            />
           </div>
 
           <div>

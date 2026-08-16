@@ -13,6 +13,7 @@ import { useI18n, INITIAL_UI_LANGUAGES, translateCategory } from '../utils/i18n'
 import { COUNTRY_LANGUAGES, OFFICIAL_SECTIONS, PROFESSION_OPTIONS } from '../data/curriculum';
 import { LanguagePicker } from './LanguagePicker';
 import { WordFloatBackdrop } from './WordFloatBackdrop';
+import { Flag } from './Flag';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -153,7 +154,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn
                 title={`${c.country} — ${c.languageName}`}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-line text-[11px] font-medium text-ink-muted lift"
               >
-                <span className="text-sm leading-none">{c.flag}</span>
+                <Flag code={c.flag} title={c.country} className="w-4 h-auto" />
                 {c.nativeName}
               </span>
             ))}
@@ -297,9 +298,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn
           <span>{t('footer.desc', "Shaxsiylashtirilgan til ta'limi platformasi")}</span>
           <div className="flex items-center gap-1">
             {INITIAL_UI_LANGUAGES.slice(0, 6).map((l) => (
-              <span key={l.code} title={l.name} className="text-sm leading-none">
-                {l.flag}
-              </span>
+              <Flag key={l.code} code={l.flag} title={l.name} className="w-4 h-auto" />
             ))}
           </div>
         </div>

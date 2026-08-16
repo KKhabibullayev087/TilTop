@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Flag } from './Flag';
 
 /**
  * Decorative backdrop for the login/landing panel: vocabulary cards drifting
@@ -65,7 +66,7 @@ export const WordFloatBackdrop: React.FC = () => {
           }}
         >
           <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-surface/80 backdrop-blur-sm border border-surface/60 shadow-sm max-w-[210px]">
-            <span className="text-base leading-none flex-shrink-0">{card.flag}</span>
+            <Flag code={card.flag} className="w-5 h-auto" />
             <span className="min-w-0">
               <span className="block text-xs font-semibold text-ink truncate">{card.phrase}</span>
               <span className="block text-[11px] text-ink-muted truncate">{card.translation}</span>
