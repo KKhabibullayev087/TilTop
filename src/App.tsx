@@ -32,18 +32,15 @@ import { RawJsonEngineExplorer } from './components/RawJsonEngineExplorer';
 import { UserProgressStats } from './components/UserProgressStats';
 import { OnboardingProfileModal } from './components/OnboardingProfileModal';
 import { AddLanguageModal } from './components/AddLanguageModal';
-import { LoginPage } from './components/LoginPage';
 import { LandingPage } from './components/LandingPage';
 import { CustomDropdown } from './components/CustomDropdown';
 import { Flag } from './components/Flag';
 import { I18nProvider, useI18n } from './utils/i18n';
-import { AuthProvider, useAuth } from './utils/auth';
 
 const SIDEBAR_COLLAPSED_KEY = 'tiltop_sidebar_collapsed';
 
 function TilTopDashboard() {
   const { t } = useI18n();
-  const { user, saveState } = useAuth();
 
   // 1. Persistent User Profile & Progress
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
@@ -77,15 +74,6 @@ function TilTopDashboard() {
       completedSections: [],
     };
   });
-
-  // Adopt server-side state once, when the account's saved state arrives.
-  const [hydratedFromAccount, setHydratedFromAccount] = useState(false);
-  useEffect(() => {
-    if (hydratedFromAccount || !user) return;
-    if (user.profile) setUserProfile((prev) => ({ ...prev, ...(user.profile as object) }));
-    if (user.progress) setUserProgress((prev) => ({ ...prev, ...(user.progress as object) }));
-    setHydratedFromAccount(true);
-  }, [user, hydratedFromAccount]);
 
   // Dynamic Curriculum Sections (adapted to selected country / target language)
   const [activeSections, setActiveSections] = useState<LessonSection[]>(() =>
@@ -192,7 +180,7 @@ function TilTopDashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Barchasi');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('Barchasi');
 
-  // Persist locally, then mirror to the account so progress follows the user.
+  // Progress lives in the browser: this device keeps its own profile and XP.
   useEffect(() => {
     localStorage.setItem('tiltop_user_profile', JSON.stringify(userProfile));
   }, [userProfile]);
@@ -200,14 +188,6 @@ function TilTopDashboard() {
   useEffect(() => {
     localStorage.setItem('tiltop_user_progress', JSON.stringify(userProgress));
   }, [userProgress]);
-
-  useEffect(() => {
-    if (!user || !hydratedFromAccount) return;
-    const timer = setTimeout(() => {
-      saveState({ profile: userProfile, progress: userProgress });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [userProfile, userProgress, user, hydratedFromAccount, saveState]);
 
   const categories = [
     t('filter.all', 'Barchasi'),
@@ -603,40 +583,25 @@ function TilTopDashboard() {
   );
 }
 
+const ENTERED_KEY = 'tiltop_entered';
+
 /**
- * Routes a visitor: landing page first, then the auth form, then the app.
- * A returning user with a valid token skips straight to the dashboard.
+ * Shows the landing page to a first-time visitor and the dashboard to everyone
+ * else. The choice is remembered per browser, so returning learners land
+ * straight in the app.
  */
-function AuthGate() {
-  const { user, token, isRestoring } = useAuth();
-  const [view, setView] = useState<{ screen: 'landing' | 'auth'; mode: 'login' | 'register' }>({
-    screen: 'landing',
-    mode: 'login',
-  });
+function Gate() {
+  const [entered, setEntered] = useState<boolean>(
+    () => localStorage.getItem(ENTERED_KEY) === '1'
+  );
 
-  if (isRestoring) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-muted">
-        <Loader2 className="w-6 h-6 text-accent-500 animate-spin" />
-      </div>
-    );
-  }
+  const enter = () => {
+    localStorage.setItem(ENTERED_KEY, '1');
+    setEntered(true);
+  };
 
-  if (!token || !user) {
-    if (view.screen === 'landing') {
-      return (
-        <LandingPage
-          onGetStarted={() => setView({ screen: 'auth', mode: 'register' })}
-          onSignIn={() => setView({ screen: 'auth', mode: 'login' })}
-        />
-      );
-    }
-    return (
-      <LoginPage
-        initialMode={view.mode}
-        onBack={() => setView({ screen: 'landing', mode: 'login' })}
-      />
-    );
+  if (!entered) {
+    return <LandingPage onGetStarted={enter} />;
   }
 
   return <TilTopDashboard />;
@@ -644,11 +609,9 @@ function AuthGate() {
 
 export function App() {
   return (
-    <AuthProvider>
-      <I18nProvider>
-        <AuthGate />
-      </I18nProvider>
-    </AuthProvider>
+    <I18nProvider>
+      <Gate />
+    </I18nProvider>
   );
 }
 

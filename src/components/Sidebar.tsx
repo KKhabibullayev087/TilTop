@@ -9,13 +9,11 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   X,
-  LogOut,
   User,
 } from 'lucide-react';
 import { UserProfile } from '../types';
 import { PROFESSION_OPTIONS, PROFICIENCY_OPTIONS } from '../data/curriculum';
 import { useI18n } from '../utils/i18n';
-import { useAuth } from '../utils/auth';
 
 export type TabId = 'scenarios' | 'games' | 'lab' | 'json_engine' | 'stats';
 
@@ -47,7 +45,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const { t } = useI18n();
-  const { user, logout } = useAuth();
 
   const currentProf =
     PROFESSION_OPTIONS.find((p) => p.id === userProfile.profession) || PROFESSION_OPTIONS[0];
@@ -72,13 +69,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: completedCount > 0 ? `${completedCount}/20` : undefined,
     },
   ];
-
-  const initials = (user?.name || 'T')
-    .split(' ')
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 
   // `collapsed` only applies from lg up; the mobile drawer is always full width.
   const railWidth = collapsed ? 'lg:w-[72px]' : 'lg:w-64';
@@ -251,29 +241,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               type="button"
               id="sidebar-profile-btn"
               onClick={onOpenProfileModal}
-              title={user?.email || t('header.profile', 'Profil')}
+              title={t('header.profile', 'Profil')}
               className={`flex-1 min-w-0 flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-surface-sunken transition-colors cursor-pointer ${collapsed ? 'lg:flex-none lg:w-full lg:justify-center' : ''}`}
             >
               <span className="w-8 h-8 rounded-full bg-accent-500 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                {user ? initials : <User className="w-4 h-4" />}
+                <User className="w-4 h-4" />
               </span>
               <span className={`min-w-0 text-left ${collapsed ? 'lg:hidden' : ''}`}>
                 <span className="block text-xs font-semibold text-ink truncate">
-                  {user?.name || t('header.profile', 'Profil')}
+                  {t('header.profile', 'Profil')}
                 </span>
                 <span className="block text-[11px] text-ink-subtle truncate">
-                  {user?.email || ''}
+                  {currentProf.titleUz}
                 </span>
               </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={logout}
-              title={t('auth.logout', 'Chiqish')}
-              className={`flex items-center justify-center w-8 h-8 rounded-lg text-ink-subtle hover:text-danger hover:bg-danger-soft transition-colors cursor-pointer flex-shrink-0 ${collapsed ? 'lg:w-full' : ''}`}
-            >
-              <LogOut className="w-4 h-4" />
             </button>
           </div>
 

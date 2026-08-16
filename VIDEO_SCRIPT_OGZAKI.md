@@ -106,7 +106,7 @@ Undan keyingi bosqich — **jonli ovozli suhbat**. Hozir AI bilan yozishamiz. Ke
 
 Yana do'stlar bilan reyting jadvali, haftalik turnirlar qo'shmoqchiman. Chunki raqobat bo'lsa — odam tashlab ketmaydi. `[——]`
 
-Uzoqroq reja esa — **biznes tomoni**. Kompaniyalar xodimlarini tayyorlashi uchun alohida panel, o'quv markazlariga litsenziya. `[…]` Bunga baza allaqachon tayyor: har bir odamning progressi serverda saqlanadi.
+Uzoqroq reja esa — **biznes tomoni**. Kompaniyalar xodimlarini tayyorlashi uchun alohida panel, o'quv markazlariga litsenziya. `[…]` Buning uchun keyingi qadam — hisoblar tizimi, toki progress qurilmaga emas, odamning o'ziga bog'langan bo'lsin.
 
 Lekin men eng ko'p **mana bunisini** xohlayman. `[…]` AI sizning **xatolaringizni eslab qolsin**. Va ertangi darsni aynan siz adashgan joylar ustiga qursin. `[——]` Mana o'shanda bu haqiqiy shaxsiy repetitor bo'ladi.
 

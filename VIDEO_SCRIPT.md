@@ -20,7 +20,7 @@ Keling, bitta savoldan boshlaymiz. Maktabda yoki kursda ingliz tilini yillab o'r
 
 Platformada **20 ta real hayotiy ssenariy** bor: aeroportda pasport nazorati, Chorsu bozorida savdolashish, shifokor qabuli, IT intervyu, bankda valyuta ayirboshlash, favqulodda vaziyatlar va boshqalar.
 
-Eng muhimi — bu darslar statik emas. Foydalanuvchi ro'yxatdan o'tayotganda **uch narsani** tanlaydi: qaysi tilni o'rganmoqchi, kasbi nima va darajasi qanday — A1 dan C2 gacha. Shundan keyin sun'iy intellekt **butun kursni shaxsan o'sha odamga moslashtiradi**. Ya'ni dasturchi bilan shifokor bir xil ssenariyni ochsa ham, ichidagi so'zlar va dialoglar boshqacha bo'ladi."
+Eng muhimi — bu darslar statik emas. Foydalanuvchi boshlashda **uch narsani** tanlaydi: qaysi tilni o'rganmoqchi, kasbi nima va darajasi qanday — A1 dan C2 gacha. Shundan keyin sun'iy intellekt **butun kursni shaxsan o'sha odamga moslashtiradi**. Ya'ni dasturchi bilan shifokor bir xil ssenariyni ochsa ham, ichidagi so'zlar va dialoglar boshqacha bo'ladi."
 
 **Ekranda:** profil sozlash oynasi (til / kasb / daraja tanlash), keyin kartochkalar yangilanishi.
 
@@ -68,7 +68,7 @@ Yaqin rejalarda: **mobil ilova** — iOS va Android uchun, chunki til o'rganish 
 
 O'rta muddatda: **jonli ovozli suhbat** — hozir matn orqali yozishmoqchimiz, keyingi bosqichda AI bilan real vaqtda telefon qilgandek gaplashish. Shuningdek, **ijtimoiy raqobat** — do'stlar bilan reyting jadvali va haftalik turnirlar.
 
-Uzoq muddatda men TilTop'ni **B2B mahsulot** sifatida ko'ryapman: kompaniyalar o'z xodimlarini til bo'yicha tayyorlashi uchun korporativ panel, va o'quv markazlari uchun litsenziya modeli. Ma'lumotlar bazasi allaqachon shunga tayyor — har bir foydalanuvchining progressi serverda saqlanadi.
+Uzoq muddatda men TilTop'ni **B2B mahsulot** sifatida ko'ryapman: kompaniyalar o'z xodimlarini til bo'yicha tayyorlashi uchun korporativ panel, va o'quv markazlari uchun litsenziya modeli. Buning uchun keyingi qadam — hisoblar tizimi, toki progress qurilmaga emas, odamga bog'langan bo'lsin.
 
 Va eng katta maqsad: **har bir foydalanuvchi uchun butunlay shaxsiy kurs** — sun'iy intellekt sizning xatolaringizni eslab qolib, ertangi darsni aynan shu xatolar ustiga quradi."
 
@@ -109,7 +109,7 @@ E'tiboringiz uchun rahmat!"
 
 # Demo tartibi (ekranni yozish uchun)
 
-1. Login sahifasi → ro'yxatdan o'tish
+1. Landing sahifa → "Bepul boshlash"
 2. Profil sozlash: til + kasb + daraja
 3. 20 ta ssenariy ro'yxati, filtr va qidiruv
 4. Bitta ssenariyni ochish → Lug'at → ovozni eshittirish (🔊)

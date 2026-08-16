@@ -5,11 +5,13 @@ coverage/
 
 # Vite client build output (Vercel serves static assets from here)
 /public/
+
+# Leftover user store from the removed auth system. Kept ignored so an old
+# copy with password hashes can never be committed by accident.
+# Leading slash matters: a bare "data/" would also ignore src/data/.
+/data/
 .DS_Store
 *.log
 .env*
 !.env.example
 
-# Local user store (accounts, password hashes).
-# Leading slash matters: a bare "data/" would also ignore src/data/.
-/data/

@@ -2,17 +2,6 @@ import express from "express";
 import path from "path";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
-import {
-  authenticate,
-  createUser,
-  findUserById,
-  issueToken,
-  requireAuth,
-  saveUserState,
-  toPublicUser,
-  validateCredentials,
-  type AuthedRequest,
-} from "./auth";
 
 dotenv.config();
 
@@ -45,115 +34,6 @@ if (missingKeys.length > 0) {
     `Features depending on them will fail until they are set.`
   );
 }
-
-// =====================================================================
-// AUTHENTICATION
-// =====================================================================
-
-// Brute-force damper: a rolling per-email attempt counter.
-const loginAttempts = new Map<string, { count: number; firstAt: number }>();
-const ATTEMPT_WINDOW_MS = 15 * 60 * 1000;
-const MAX_ATTEMPTS = 8;
-
-function tooManyAttempts(email: string): boolean {
-  const key = email.trim().toLowerCase();
-  const entry = loginAttempts.get(key);
-  if (!entry) return false;
-  if (Date.now() - entry.firstAt > ATTEMPT_WINDOW_MS) {
-    loginAttempts.delete(key);
-    return false;
-  }
-  return entry.count >= MAX_ATTEMPTS;
-}
-
-function recordFailure(email: string): void {
-  const key = email.trim().toLowerCase();
-  const entry = loginAttempts.get(key);
-  if (!entry || Date.now() - entry.firstAt > ATTEMPT_WINDOW_MS) {
-    loginAttempts.set(key, { count: 1, firstAt: Date.now() });
-    return;
-  }
-  entry.count += 1;
-}
-
-app.post("/api/auth/register", async (req, res) => {
-  try {
-    const { email, name, password } = req.body || {};
-
-    const invalid = validateCredentials(email, password, name);
-    if (invalid) {
-      return res.status(400).json({ error: invalid });
-    }
-
-    const user = await createUser(email, name, password);
-    res.status(201).json({ user: toPublicUser(user), token: issueToken(user.id) });
-  } catch (error: any) {
-    if (error?.message === "EMAIL_TAKEN") {
-      return res.status(409).json({ error: "Bu email allaqachon ro'yxatdan o'tgan." });
-    }
-    console.error("Error in /api/auth/register:", error);
-    res.status(500).json({ error: "Ro'yxatdan o'tishda xatolik yuz berdi." });
-  }
-});
-
-app.post("/api/auth/login", async (req, res) => {
-  try {
-    const { email, password } = req.body || {};
-
-    const invalid = validateCredentials(email, password);
-    if (invalid) {
-      return res.status(400).json({ error: invalid });
-    }
-
-    if (tooManyAttempts(email)) {
-      return res.status(429).json({
-        error: "Juda ko'p urinish. 15 daqiqadan so'ng qayta urinib ko'ring.",
-      });
-    }
-
-    const user = await authenticate(email, password);
-    if (!user) {
-      recordFailure(email);
-      // Same message for unknown email and wrong password — do not disclose
-      // which accounts exist.
-      return res.status(401).json({ error: "Email yoki parol noto'g'ri." });
-    }
-
-    loginAttempts.delete(email.trim().toLowerCase());
-    res.json({ user: toPublicUser(user), token: issueToken(user.id) });
-  } catch (error: any) {
-    console.error("Error in /api/auth/login:", error);
-    res.status(500).json({ error: "Kirishda xatolik yuz berdi." });
-  }
-});
-
-app.get("/api/auth/me", requireAuth, async (req: AuthedRequest, res) => {
-  try {
-    const user = await findUserById(req.userId!);
-    if (!user) {
-      return res.status(404).json({ error: "Foydalanuvchi topilmadi." });
-    }
-    res.json({ user: toPublicUser(user) });
-  } catch (error: any) {
-    console.error("Error in /api/auth/me:", error);
-    res.status(500).json({ error: "Foydalanuvchini o'qishda xatolik." });
-  }
-});
-
-// Persists profile/progress server-side so it follows the account across devices.
-app.put("/api/auth/state", requireAuth, async (req: AuthedRequest, res) => {
-  try {
-    const { profile, progress } = req.body || {};
-    const updated = await saveUserState(req.userId!, { profile, progress });
-    if (!updated) {
-      return res.status(404).json({ error: "Foydalanuvchi topilmadi." });
-    }
-    res.json({ user: toPublicUser(updated) });
-  } catch (error: any) {
-    console.error("Error in /api/auth/state:", error);
-    res.status(500).json({ error: "Ma'lumotlarni saqlashda xatolik." });
-  }
-});
 
 // Azure Neural Voice Resolver for any custom target language
 function resolveAzureVoice(languageCodeOrName: string): { locale: string; voiceName: string } {

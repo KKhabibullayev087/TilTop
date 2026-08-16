@@ -17,10 +17,9 @@ import { Flag } from './Flag';
 
 interface LandingPageProps {
   onGetStarted: () => void;
-  onSignIn: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
   const { t } = useI18n();
 
   const features = [
@@ -81,13 +80,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn
             <LanguagePicker align="right" />
             <button
               type="button"
-              onClick={onSignIn}
-              className="hidden sm:block px-3.5 py-2 rounded-lg text-sm font-medium text-ink-muted hover:text-ink hover:bg-surface-sunken transition-colors cursor-pointer press"
-            >
-              {t('auth.tab_login', 'Kirish')}
-            </button>
-            <button
-              type="button"
               id="landing-get-started-top"
               onClick={onGetStarted}
               className="px-3.5 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white text-sm font-semibold transition-colors cursor-pointer press"
@@ -134,13 +126,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted, onSignIn
             >
               {t('landing.cta_free', 'Bepul boshlash')}
               <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={onSignIn}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-surface border border-line hover:bg-surface-sunken text-ink text-sm font-medium transition-colors cursor-pointer press"
-            >
-              {t('landing.cta_have_account', 'Hisobim bor')}
             </button>
           </div>
 

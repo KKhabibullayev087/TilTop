@@ -26,7 +26,7 @@ dars beradi. TilTop darslikni emas, **vaziyatni** o'rgatadi.
 | **Azure Neural TTS** | 12 til uchun tabiiy ovozli talaffuz namunasi |
 | **Talaffuz baholash** | Mikrofon orqali gapirasiz, AI 0–100 ball va o'zbekcha maslahat beradi |
 | **4 ta interaktiv o'yin** | Tezkor so'z moslashtirish, ovozli takrorlash, gap qurish, AI bilan rolli dialog |
-| **Gamifikatsiya** | XP, kunlik streak, 5 daraja, 6 yutuq nishoni — server'da saqlanadi |
+| **Gamifikatsiya** | XP, kunlik streak, 5 daraja, 6 yutuq nishoni — brauzerda saqlanadi |
 | **AI interfeys tarjimoni** | Yangi til qo'shilsa, AI butun sayt interfeysini o'sha tilga o'giradi |
 | **JSON Engine Explorer** | Dars generatsiyasining xom JSON chiqishi — o'qituvchilar o'z darsini yasashi uchun |
 
@@ -36,7 +36,7 @@ dars beradi. TilTop darslikni emas, **vaziyatni** o'rgatadi.
 **Backend:** Node.js · Express · TypeScript
 **AI:** Google Gemini (asosiy) · Mistral AI · OpenAI (zaxira)
 **Ovoz:** Azure Neural TTS (chiqish) · Web Speech API (kirish)
-**Auth:** scrypt parol hash + HMAC-imzolangan sessiya tokeni (30 kun), tashqi kutubxonasiz
+**Saqlash:** hisob yo'q — profil va progress `localStorage` da, qurilmaga bog'liq
 
 ---
 
@@ -63,20 +63,10 @@ Ilova `http://localhost:3000` da ochiladi.
 | O'zgaruvchi | Majburiymi | Nima uchun |
 |---|---|---|
 | `GEMINI_API_KEY` | Ha | Asosiy AI dvigatel — [olish](https://aistudio.google.com/apikey) |
-| `AUTH_SECRET` | Ha | Sessiya tokenlarini imzolaydi (pastda generatsiya buyrug'i) |
 | `AZURE_SPEECH_KEY` | Yo'q | Neural ovoz. Bo'lmasa brauzer TTS'iga tushadi |
 | `AZURE_SPEECH_REGION` | Yo'q | Masalan `eastus` |
 | `MISTRAL_API_KEY` | Yo'q | 1-zaxira LLM |
 | `OPENAI_API_KEY` | Yo'q | 2-zaxira LLM |
-
-`AUTH_SECRET` generatsiya qilish:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-> ⚠️ `AUTH_SECRET` o'rnatilmasa, server har qayta ishga tushganda tasodifiy
-> kalit yaratadi va barcha sessiyalar bekor bo'ladi.
 
 ### Production build
 
@@ -95,42 +85,28 @@ aylantiradi. Klient build'i `public/` ga chiqadi — Vercel statik fayllarni
 aynan o'sha yerdan CDN orqali beradi, qolgan barcha so'rovlar Express'ga
 boradi.
 
-Bitta muhim jihat bor. **Vercel'da fayl tizimiga yozib bo'lmaydi**, shuning
-uchun `data/users.json` u yerda saqlanmaydi. Aynan shu JSON hujjat Vercel Blob
-ichida saqlanadi — tuzilishi bir xil, faqat joyi boshqa.
+Ilova hech narsani serverga yozmaydi — profil va progress foydalanuvchining
+brauzerida turadi. Shuning uchun baza ham, fayl saqlash ham kerak emas.
 
-**1. Blob store yarating**
-
-Vercel loyihangizda: `Storage` → `Create Database` → `Blob` → access **Private**
-→ loyihaga ulang. Vercel `BLOB_STORE_ID` va OIDC ma'lumotlarini o'zi qo'shadi.
-
-> Private tanlash majburiy: store ichida parol hash'lari yotadi.
-
-**2. Muhit o'zgaruvchilarini qo'shing**
+**1. Muhit o'zgaruvchilarini qo'shing**
 
 `Settings` → `Environment Variables`:
 
 | O'zgaruvchi | Qiymat |
 |---|---|
-| `AUTH_SECRET` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` natijasi |
 | `GEMINI_API_KEY` | Gemini kalitingiz |
 | `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION` | ixtiyoriy |
 | `MISTRAL_API_KEY` / `OPENAI_API_KEY` | ixtiyoriy |
 
-**3. Deploy qiling.** Boshqa sozlash kerak emas.
+**2. Deploy qiling.** Boshqa sozlash kerak emas.
 
 ### Nimalar boshqacha ishlaydi
 
 | | Lokalda | Vercel'da |
 |---|---|---|
-| Hisoblar qayerda | `data/users.json` | Blob ichidagi `tiltop/users.json` |
 | Server | doimiy Express (`:3000`) | so'rov bo'yicha serverless funksiya |
 | Statik fayllar | Express beradi (`public/`) | Vercel CDN beradi (`public/**`) |
-| Login urinishlari hisoblagichi | jarayon xotirasida | har bir instance'da alohida |
-
-Oxirgi qatorga e'tibor bering: brute-force himoyasi xotirada saqlangani uchun
-serverless'da u zaifroq ishlaydi. Parol hash'lash va token tekshiruvi esa
-o'zgarishsiz qoladi.
+| Progress | brauzerda | brauzerda — farqi yo'q |
 
 ---
 
@@ -138,7 +114,6 @@ o'zgarishsiz qoladi.
 
 ```
 ├── server.ts                  Express server + Vercel kirish nuqtasi (default export)
-├── auth.ts                    scrypt + HMAC autentifikatsiya, JSON saqlash
 ├── vercel.json                Vercel build buyrug'i
 ├── public/                    Vite build natijasi (git'ga kirmaydi)
 ├── src/
@@ -151,16 +126,13 @@ o'zgarishsiz qoladi.
 │   └── utils/
 │       ├── i18n.tsx           Interfeys tarjimasi + AI tarjimon
 │       ├── speech.ts          Web Speech API o'ramlari
-│       └── auth.tsx           Klient tomonidagi auth konteksti
-└── data/                      Foydalanuvchi bazasi (git'ga kirmaydi)
+│       └── audioPlayer.ts     Azure TTS audio ijrochisi
 ```
 
 ## API endpointlari
 
 | Endpoint | Vazifasi |
 |---|---|
-| `POST /api/auth/register` · `login` | Ro'yxatdan o'tish / kirish |
-| `GET /api/auth/me` · `PUT /api/auth/state` | Profil va progressni sinxronlash |
 | `POST /api/raw-json-engine` | Dars kontentini generatsiya qilish |
 | `POST /api/roleplay-chat` | Ssenariy bo'yicha AI dialog |
 | `POST /api/generate-game-puzzle` | O'yin jumboqlarini generatsiya qilish |
@@ -174,10 +146,13 @@ o'zgarishsiz qoladi.
 
 ## Xavfsizlik
 
-- Parollar `scrypt` bilan, har bir foydalanuvchi uchun alohida salt bilan hash qilinadi
-- Sessiya tokenlari HMAC bilan imzolanadi, muddati 30 kun
 - Barcha AI kalitlari **faqat serverda** ishlatiladi — brauzerga hech qachon chiqmaydi
-- `.env` va `data/` papkasi `.gitignore` da
+- Hisob tizimi yo'q, ya'ni saqlanadigan parol ham yo'q
+- `.env` `.gitignore` da
+
+> ⚠️ AI endpointlari hozir ochiq — token talab qilmaydi. Sayt omma uchun
+> deploy qilinsa, har kim ularga murojaat qilib API kvotangizni sarflashi
+> mumkin. Yechim: `APP_URL` bo'yicha origin tekshiruvi yoki oddiy rate limit.
 
 ## Kimlar uchun
 
