@@ -7,5 +7,6 @@ coverage/
 .env*
 !.env.example
 
-# Local user store (accounts, password hashes)
-data/
+# Local user store (accounts, password hashes).
+# Leading slash matters: a bare "data/" would also ignore src/data/.
+/data/

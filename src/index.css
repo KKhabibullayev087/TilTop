@@ -84,27 +84,113 @@ body {
   border-radius: var(--radius-control);
 }
 
+/* ==========================================================================
+   Motion system
+   One easing curve, a few small distances. Motion should confirm an action or
+   guide the eye — never make the reader wait.
+   ========================================================================== */
+
 @keyframes tiltop-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
 }
 
-.animate-fade-up {
-  animation: tiltop-fade-up 0.16s ease-out;
+@keyframes tiltop-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
 }
 
+@keyframes tiltop-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes tiltop-scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes tiltop-slide-right {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Slow ambient drift for decorative backdrops. */
+@keyframes tiltop-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(2%, -3%) scale(1.04); }
+  66%  { transform: translate(-2%, 2%) scale(0.98); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Vocabulary cards floating up the login panel. */
+@keyframes tiltop-float-up {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.96); }
+  12%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-130px) scale(1.01); }
+}
+
+@keyframes tiltop-shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+.animate-fade-up    { animation: tiltop-fade-up 0.16s ease-out; }
+.animate-rise       { animation: tiltop-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-in    { animation: tiltop-fade 0.4s ease-out both; }
+.animate-scale-in   { animation: tiltop-scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-slide-right{ animation: tiltop-slide-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-drift      { animation: tiltop-drift 22s ease-in-out infinite; }
+
+/* Stagger children of a list/grid without hand-writing per-item delays. */
+.stagger > *          { animation: tiltop-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.stagger > *:nth-child(1)  { animation-delay: 0.02s; }
+.stagger > *:nth-child(2)  { animation-delay: 0.06s; }
+.stagger > *:nth-child(3)  { animation-delay: 0.10s; }
+.stagger > *:nth-child(4)  { animation-delay: 0.14s; }
+.stagger > *:nth-child(5)  { animation-delay: 0.18s; }
+.stagger > *:nth-child(6)  { animation-delay: 0.22s; }
+.stagger > *:nth-child(7)  { animation-delay: 0.26s; }
+.stagger > *:nth-child(8)  { animation-delay: 0.30s; }
+.stagger > *:nth-child(9)  { animation-delay: 0.34s; }
+.stagger > *:nth-child(n+10) { animation-delay: 0.38s; }
+
+/* Shared interaction affordances. */
+.lift {
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.18s ease,
+              border-color 0.18s ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -12px rgb(15 23 42 / 0.18);
+}
+.lift:active { transform: translateY(0); }
+
+.press { transition: transform 0.12s ease; }
+.press:active { transform: scale(0.975); }
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-sunken) 25%,
+    var(--color-line) 37%,
+    var(--color-surface-sunken) 63%
+  );
+  background-size: 200% 100%;
+  animation: tiltop-shimmer 1.4s linear infinite;
+}
+
+/* Honour the OS setting: kill motion, keep every element visible. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
   }
+  .lift:hover { transform: none; }
 }

@@ -40,7 +40,8 @@ interface InteractiveLessonLabProps {
   userProfile: UserProfile;
   onBack: () => void;
   onCompleteSection: (sectionId: number, earnedXp: number) => void;
-  onViewJson: (section: LessonSection) => void;
+  /** Omitted for non-IT learners — the raw JSON tool is IT-only. */
+  onViewJson?: (section: LessonSection) => void;
   onOpenGames: (section: LessonSection) => void;
 }
 
@@ -276,13 +277,15 @@ export const InteractiveLessonLab: React.FC<InteractiveLessonLabProps> = ({
             <span>{t('lab.games_button', "O'yinlar")}</span>
           </button>
 
-          <button
-            onClick={() => onViewJson(section)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-sunken hover:bg-line border border-line text-ink-muted text-xs font-mono font-bold transition-colors cursor-pointer"
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>JSON</span>
-          </button>
+          {onViewJson && (
+            <button
+              onClick={() => onViewJson(section)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-sunken hover:bg-line border border-line text-ink-muted text-xs font-mono font-bold transition-colors cursor-pointer press"
+            >
+              <Code2 className="w-3.5 h-3.5" />
+              <span>JSON</span>
+            </button>
+          )}
 
         </div>
 

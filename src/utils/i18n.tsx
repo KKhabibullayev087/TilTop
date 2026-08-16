@@ -216,6 +216,49 @@ export const BASE_UZ_DICTIONARY: Record<string, string> = {
   'stats.badges_title': "Yutuqlar va Nishonlar",
   'stats.badges_desc': "Darslar va o'yinlarni bajarib nishonlarni oching.",
   'stats.unlocked': "Ochilgan",
+
+  // Extracted from components so the whole UI switches language
+  'landing.f1_title': "20 ta hayotiy ssenariy",
+  'landing.f1_desc': "Bozordagi savdolashuvdan IT intervyugacha — real vaziyatlar.",
+  'landing.f2_title': "AI bilan jonli dialog",
+  'landing.f2_desc': "Sun'iy intellekt suhbatdosh bilan mashq qiling va izoh oling.",
+  'landing.f3_title': "Interaktiv o'yinlar",
+  'landing.f3_desc': "So'z mosligi, talaffuz mashqi va gap tuzish boshqotirmalari.",
+  'landing.f4_title': "Tabiiy talaffuz",
+  'landing.f4_desc': "Azure neural ovozlar bilan to'g'ri talaffuzni eshiting.",
+  'landing.f5_title': "Har qanday til va davlat",
+  'landing.f5_desc': "Tanlagan davlatingiz tiliga darslar avtomatik moslashadi.",
+  'landing.f6_title': "Taraqqiyot va yutuqlar",
+  'landing.f6_desc': "XP, kunlik seriya va shaxsiy statistika bilan izchil o'rganing.",
+  'landing.s1_title': "Kasbingizni tanlang",
+  'landing.s1_desc': "Darslar sizning sohangizga moslashadi.",
+  'landing.s2_title': "Tilni tanlang",
+  'landing.s2_desc': "Istalgan davlat tilini tanlang.",
+  'landing.s3_title': "Mashq qilishni boshlang",
+  'landing.s3_desc': "AI bilan suhbatlashing va XP to'plang.",
+  'landing.cta_start': "Boshlash",
+  'landing.badge': "AI asosidagi til platformasi",
+  'landing.hero_title': "Tilni darslikdan emas — hayotdan o'rganing",
+  'landing.hero_subtitle': "20 ta real vaziyat, AI suhbatdosh va tabiiy talaffuz. Har bir dars sizning kasbingiz va tanlagan davlatingiz tiliga moslashadi.",
+  'landing.cta_free': "Bepul boshlash",
+  'landing.cta_have_account': "Hisobim bor",
+  'landing.stat_scenarios': "Hayotiy ssenariy",
+  'landing.stat_langs': "Til va davlat",
+  'landing.stat_prof': "Kasbiy yo'nalish",
+  'landing.stat_games': "Interaktiv o'yin",
+  'landing.features_title': "Nima uchun TilTop?",
+  'landing.features_subtitle': "Yodlash emas — ishlatish. Har bir dars siz duch keladigan haqiqiy vaziyatdan boshlanadi.",
+  'landing.how_title': "Uch qadamda boshlanadi",
+  'landing.scenarios_title': "Sizni nima kutmoqda",
+  'landing.scenarios_subtitle': "Har bir ssenariyda lug'at, AI bilan dialog va mini test bor.",
+  'landing.final_title': "Bugun birinchi darsni boshlang",
+  'landing.final_subtitle': "Ro'yxatdan o'tish bepul. Bir necha daqiqada birinchi suhbatingizni o'tkazasiz.",
+  'landing.perk_free': "Bepul boshlanadi",
+  'landing.perk_nocard': "Karta talab qilinmaydi",
+  'landing.perk_instant': "Darhol foydalanish",
+  'landing.back_home': "Bosh sahifa",
+  'auth.hide_password': "Parolni yashirish",
+  'auth.show_password': "Parolni ko'rsatish",
 };
 
 // Preset built-in translations for instant switching
@@ -2164,7 +2207,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const saved = localStorage.getItem('tiltop_translations_cache');
     if (saved) {
       try {
-        return { ...BUILTIN_UI_TRANSLATIONS, ...JSON.parse(saved) };
+        // Built-ins must win. Spreading the cache last let a dictionary saved by
+        // an earlier release replace a shipped one wholesale, so every key added
+        // since then fell back to Uzbek — the UI simply stopped translating.
+        // The cache exists only to carry AI-generated languages across reloads.
+        return { ...JSON.parse(saved), ...BUILTIN_UI_TRANSLATIONS };
       } catch (e) {}
     }
     return BUILTIN_UI_TRANSLATIONS;
@@ -2193,7 +2240,13 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [availableUiLanguages]);
 
   useEffect(() => {
-    localStorage.setItem('tiltop_translations_cache', JSON.stringify(translationsCache));
+    // Persist only AI-generated languages. Writing the built-ins back would
+    // re-create the stale-cache problem the moment a new key ships.
+    const customOnly: Record<string, Record<string, string>> = {};
+    for (const code of Object.keys(translationsCache)) {
+      if (!(code in BUILTIN_UI_TRANSLATIONS)) customOnly[code] = translationsCache[code];
+    }
+    localStorage.setItem('tiltop_translations_cache', JSON.stringify(customOnly));
   }, [translationsCache]);
 
   const setUiLanguage = (code: string) => {

@@ -54,11 +54,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const currentLvl =
     PROFICIENCY_OPTIONS.find((l) => l.id === userProfile.level) || PROFICIENCY_OPTIONS[0];
 
+  // The raw JSON engine is a developer-facing tool, so it only appears for
+  // learners who picked the IT track.
+  const showJsonEngine = userProfile.profession === 'it_specialist';
+
   const navItems: { id: TabId; label: string; icon: typeof BookOpen; badge?: string }[] = [
     { id: 'scenarios', label: t('nav.scenarios', '20 Ssenariy'), icon: BookOpen, badge: '20' },
     { id: 'games', label: t('nav.games', "Mini O'yinlar"), icon: Gamepad2, badge: '4' },
     { id: 'lab', label: t('nav.lab', 'Dars Laboratoriyasi'), icon: Sparkles },
-    { id: 'json_engine', label: t('nav.json_engine', 'JSON Dvigatel'), icon: Code2 },
+    ...(showJsonEngine
+      ? [{ id: 'json_engine' as TabId, label: t('nav.json_engine', 'JSON Dvigatel'), icon: Code2 }]
+      : []),
     {
       id: 'stats',
       label: t('nav.stats', 'Mening Natijalarim'),
@@ -171,7 +177,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 title={collapsed ? item.label : undefined}
                 aria-current={isActive ? 'page' : undefined}
                 className={`
-                  w-full flex items-center gap-3 px-2.5 py-2 rounded-lg
+                  w-full flex items-center gap-3 px-2.5 py-2 rounded-lg press
                   text-sm font-medium transition-colors cursor-pointer
                   ${collapsed ? 'lg:justify-center lg:px-0' : ''}
                   ${isActive

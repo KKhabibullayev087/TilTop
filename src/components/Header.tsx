@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ChevronDown, Plus, Check, Search, Menu, Globe, Languages } from 'lucide-react';
+import { ChevronDown, Plus, Check, Search, Menu, Languages } from 'lucide-react';
 import { UserProfile } from '../types';
 import { COUNTRY_LANGUAGES } from '../data/curriculum';
 import { useI18n } from '../utils/i18n';
+import { LanguagePicker } from './LanguagePicker';
 
 interface HeaderProps {
   targetLanguage: string;
@@ -19,9 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAddLanguageModal,
   onOpenMobileNav,
 }) => {
-  const { t, currentUiLang, availableUiLanguages, setUiLanguage } = useI18n();
+  const { t } = useI18n();
 
-  const [siteUiOpen, setSiteUiOpen] = useState(false);
   const [targetOpen, setTargetOpen] = useState(false);
   const [countryQuery, setCountryQuery] = useState('');
 
@@ -46,7 +46,6 @@ export const Header: React.FC<HeaderProps> = ({
   });
 
   const closeAll = () => {
-    setSiteUiOpen(false);
     setTargetOpen(false);
   };
 
@@ -69,91 +68,18 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Language controls */}
         <div className="flex items-center gap-2">
 
-          {/* Site UI language */}
-          <div className="relative">
-            <button
-              id="header-site-language-btn"
-              type="button"
-              onClick={() => {
-                setSiteUiOpen((v) => !v);
-                setTargetOpen(false);
-              }}
-              className="flex items-center gap-2 px-2.5 py-2 rounded-lg border border-line hover:bg-surface-sunken text-sm transition-colors cursor-pointer"
-            >
-              <span className="text-base leading-none">{currentUiLang.flag}</span>
-              <span className="hidden sm:block text-xs font-medium text-ink max-w-[90px] truncate">
-                {currentUiLang.nativeName}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-ink-subtle" />
-            </button>
+          {/* Site UI language — shared picker so every surface behaves alike */}
+          <LanguagePicker align="right" />
 
-            {siteUiOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={closeAll} />
-                <div className="absolute right-0 mt-2 w-72 bg-surface rounded-xl border border-line shadow-lg p-2 z-50 animate-fade-up">
-                  <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-                    <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-ink-subtle">
-                      <Globe className="w-3 h-3" />
-                      {t('header.site_lang', 'Sayt Tili')}
-                    </span>
-                    <span className="text-[11px] text-ink-subtle tabular-nums">
-                      {availableUiLanguages.length}
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    id="header-add-ui-lang-btn"
-                    onClick={() => {
-                      closeAll();
-                      onOpenAddLanguageModal('site_ui');
-                    }}
-                    className="w-full mb-1.5 flex items-center justify-center gap-2 py-2 rounded-lg bg-accent-500 hover:bg-accent-600 text-white text-xs font-semibold transition-colors cursor-pointer"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    {t('header.add_lang', "Til qo'shish")}
-                  </button>
-
-                  <div className="max-h-64 overflow-y-auto thin-scroll space-y-0.5">
-                    {availableUiLanguages.map((lang) => {
-                      const isSelected = currentUiLang.code === lang.code;
-                      return (
-                        <button
-                          key={lang.code}
-                          type="button"
-                          onClick={() => {
-                            setUiLanguage(lang.code);
-                            closeAll();
-                          }}
-                          className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left transition-colors cursor-pointer ${
-                            isSelected ? 'bg-accent-50' : 'hover:bg-surface-sunken'
-                          }`}
-                        >
-                          <span className="text-lg leading-none flex-shrink-0">{lang.flag}</span>
-                          <span className="min-w-0 flex-1">
-                            <span className="flex items-center gap-1.5">
-                              <span className={`block text-xs font-medium truncate ${isSelected ? 'text-accent-700' : 'text-ink'}`}>
-                                {lang.name}
-                              </span>
-                              {lang.isAiGenerated && (
-                                <span className="px-1 rounded bg-surface-sunken text-ink-muted text-[9px] font-semibold flex-shrink-0">
-                                  AI
-                                </span>
-                              )}
-                            </span>
-                            <span className="block text-[11px] text-ink-subtle truncate">
-                              {lang.nativeName}
-                            </span>
-                          </span>
-                          {isSelected && <Check className="w-4 h-4 text-accent-600 flex-shrink-0" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+          <button
+            type="button"
+            id="header-add-ui-lang-btn"
+            onClick={() => onOpenAddLanguageModal('site_ui')}
+            title={t('header.add_lang', "Til qo'shish")}
+            className="flex items-center justify-center w-9 h-9 rounded-lg border border-line text-ink-muted hover:text-ink hover:bg-surface-sunken transition-colors cursor-pointer press"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
 
           {/* Target learning language */}
           <div className="relative">
@@ -162,7 +88,6 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => {
                 setTargetOpen((v) => !v);
-                setSiteUiOpen(false);
               }}
               className="flex items-center gap-2 px-2.5 py-2 rounded-lg border border-accent-200 bg-accent-50 hover:bg-accent-100 text-sm transition-colors cursor-pointer"
             >

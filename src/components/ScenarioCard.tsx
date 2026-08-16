@@ -36,7 +36,8 @@ interface ScenarioCardProps {
   userProfile?: UserProfile;
   onSelectScenario: (section: LessonSection) => void;
   onPlayGame?: (section: LessonSection) => void;
-  onViewJson: (section: LessonSection) => void;
+  /** Omitted for non-IT learners — the raw JSON tool is IT-only. */
+  onViewJson?: (section: LessonSection) => void;
 }
 
 const ICONS: Record<string, typeof HandMetal> = {
@@ -83,7 +84,7 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
   return (
     <div
       id={`scenario-card-${section.section_id}`}
-      className="group bg-surface rounded-xl border border-line hover:border-accent-300 transition-colors p-5 flex flex-col"
+      className="group bg-surface rounded-xl border border-line hover:border-accent-300 p-5 flex flex-col lift"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">
@@ -181,15 +182,17 @@ export const ScenarioCard: React.FC<ScenarioCardProps> = ({
             </button>
           )}
 
-          <button
-            id={`view-json-btn-${section.section_id}`}
-            type="button"
-            onClick={() => onViewJson(section)}
-            title={t('card.view_json', 'JSON')}
-            className="p-2 rounded-lg border border-line text-ink-muted hover:text-ink hover:bg-surface-sunken transition-colors cursor-pointer"
-          >
-            <Code2 className="w-4 h-4" />
-          </button>
+          {onViewJson && (
+            <button
+              id={`view-json-btn-${section.section_id}`}
+              type="button"
+              onClick={() => onViewJson(section)}
+              title={t('card.view_json', 'JSON')}
+              className="p-2 rounded-lg border border-line text-ink-muted hover:text-ink hover:bg-surface-sunken transition-colors cursor-pointer"
+            >
+              <Code2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -33,6 +33,7 @@ import { UserProgressStats } from './components/UserProgressStats';
 import { OnboardingProfileModal } from './components/OnboardingProfileModal';
 import { AddLanguageModal } from './components/AddLanguageModal';
 import { LoginPage } from './components/LoginPage';
+import { LandingPage } from './components/LandingPage';
 import { CustomDropdown } from './components/CustomDropdown';
 import { I18nProvider, useI18n } from './utils/i18n';
 import { AuthProvider, useAuth } from './utils/auth';
@@ -171,6 +172,15 @@ function TilTopDashboard() {
 
   // Active View & Tab State
   const [activeTab, setActiveTab] = useState<TabId>('scenarios');
+
+  // The JSON engine is IT-only. If the learner switches away from that track
+  // while the tab is open, move them somewhere that still exists.
+  const showJsonEngine = userProfile.profession === 'it_specialist';
+  useEffect(() => {
+    if (!showJsonEngine && activeTab === 'json_engine') {
+      setActiveTab('scenarios');
+    }
+  }, [showJsonEngine, activeTab]);
   const [selectedSection, setSelectedSection] = useState<LessonSection>(OFFICIAL_SECTIONS[0]);
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const [addLanguageModalOpen, setAddLanguageModalOpen] = useState<boolean>(false);
@@ -343,7 +353,7 @@ function TilTopDashboard() {
 
           {/* ================= TAB 1: SCENARIOS ================= */}
           {activeTab === 'scenarios' && (
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5 animate-fade-in">
 
               {/* Page header */}
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -393,7 +403,7 @@ function TilTopDashboard() {
               {!coverage.isFullyLocalized && (
                 <div
                   id="curriculum-coverage-banner"
-                  className={`rounded-xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3 ${
+                  className={`rounded-xl border p-4 flex flex-col sm:flex-row sm:items-center gap-3 animate-scale-in ${
                     isAdaptingCurriculum
                       ? 'bg-accent-50 border-accent-200'
                       : 'bg-warning-soft border-amber-200'
@@ -490,7 +500,7 @@ function TilTopDashboard() {
               </div>
 
               {/* Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 stagger">
                 {filteredSections.map((sec) => (
                   <ScenarioCard
                     key={sec.section_id}
@@ -500,13 +510,13 @@ function TilTopDashboard() {
                     userProfile={userProfile}
                     onSelectScenario={handleOpenScenarioLab}
                     onPlayGame={handleOpenScenarioGame}
-                    onViewJson={handleOpenScenarioJson}
+                    onViewJson={showJsonEngine ? handleOpenScenarioJson : undefined}
                   />
                 ))}
               </div>
 
               {filteredSections.length === 0 && (
-                <div className="text-center py-16 bg-surface rounded-xl border border-line space-y-2.5">
+                <div className="text-center py-16 bg-surface rounded-xl border border-line space-y-2.5 animate-scale-in">
                   <Search className="w-8 h-8 text-ink-subtle mx-auto" />
                   <h3 className="text-sm font-semibold text-ink">
                     {t('search.empty_title', 'Mos keluvchi ssenariy topilmadi')}
@@ -547,7 +557,7 @@ function TilTopDashboard() {
               userProfile={userProfile}
               onBack={() => setActiveTab('scenarios')}
               onCompleteSection={handleCompleteSection}
-              onViewJson={handleOpenScenarioJson}
+              onViewJson={showJsonEngine ? handleOpenScenarioJson : undefined}
               onOpenGames={handleOpenScenarioGame}
             />
           )}
@@ -590,9 +600,16 @@ function TilTopDashboard() {
   );
 }
 
-/** Gates the dashboard behind authentication. */
+/**
+ * Routes a visitor: landing page first, then the auth form, then the app.
+ * A returning user with a valid token skips straight to the dashboard.
+ */
 function AuthGate() {
   const { user, token, isRestoring } = useAuth();
+  const [view, setView] = useState<{ screen: 'landing' | 'auth'; mode: 'login' | 'register' }>({
+    screen: 'landing',
+    mode: 'login',
+  });
 
   if (isRestoring) {
     return (
@@ -603,7 +620,20 @@ function AuthGate() {
   }
 
   if (!token || !user) {
-    return <LoginPage />;
+    if (view.screen === 'landing') {
+      return (
+        <LandingPage
+          onGetStarted={() => setView({ screen: 'auth', mode: 'register' })}
+          onSignIn={() => setView({ screen: 'auth', mode: 'login' })}
+        />
+      );
+    }
+    return (
+      <LoginPage
+        initialMode={view.mode}
+        onBack={() => setView({ screen: 'landing', mode: 'login' })}
+      />
+    );
   }
 
   return <TilTopDashboard />;
