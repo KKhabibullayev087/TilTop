@@ -710,9 +710,10 @@ Return a JSON object with a "sections" array containing one entry per section_id
 });
 
 /**
- * On Vercel the app is imported by api/index.ts and driven as a serverless
- * function: no listener, and no static serving either — the platform serves
- * dist/ from its own CDN and only forwards /api/* here.
+ * Vercel detects this file as the Express entry point and turns the exported
+ * app into a single function. There it neither listens on a port nor serves
+ * files: static assets come off the CDN from public/**, and everything else is
+ * routed here. express.static() is ignored on the platform by design.
  */
 const isServerless = !!process.env.VERCEL;
 
@@ -727,10 +728,10 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    const clientPath = path.join(process.cwd(), "public");
+    app.use(express.static(clientPath));
     app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      res.sendFile(path.join(clientPath, "index.html"));
     });
   }
 

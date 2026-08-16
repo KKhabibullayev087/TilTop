@@ -89,9 +89,11 @@ npm start       # dist/server.cjs ni ishga tushiradi
 
 ## Vercel'ga deploy qilish
 
-Loyiha Vercel'da ishlashga tayyor: `api/index.ts` Express ilovasini serverless
-funksiya sifatida eksport qiladi, `vercel.json` esa `/api/*` so'rovlarini
-o'sha yerga, qolganini `dist/` statikasiga yo'naltiradi.
+Loyiha Vercel'da ishlashga tayyor. Vercel Express'ni ildizdagi `server.ts`
+faylining default eksporti orqali o'zi taniydi va uni bitta funksiyaga
+aylantiradi. Klient build'i `public/` ga chiqadi — Vercel statik fayllarni
+aynan o'sha yerdan CDN orqali beradi, qolgan barcha so'rovlar Express'ga
+boradi.
 
 Bitta muhim jihat bor. **Vercel'da fayl tizimiga yozib bo'lmaydi**, shuning
 uchun `data/users.json` u yerda saqlanmaydi. Aynan shu JSON hujjat Vercel Blob
@@ -123,7 +125,7 @@ Vercel loyihangizda: `Storage` → `Create Database` → `Blob` → access **Pri
 |---|---|---|
 | Hisoblar qayerda | `data/users.json` | Blob ichidagi `tiltop/users.json` |
 | Server | doimiy Express (`:3000`) | so'rov bo'yicha serverless funksiya |
-| Statik fayllar | Express beradi | Vercel CDN beradi |
+| Statik fayllar | Express beradi (`public/`) | Vercel CDN beradi (`public/**`) |
 | Login urinishlari hisoblagichi | jarayon xotirasida | har bir instance'da alohida |
 
 Oxirgi qatorga e'tibor bering: brute-force himoyasi xotirada saqlangani uchun
@@ -135,10 +137,10 @@ o'zgarishsiz qoladi.
 ## Loyiha tuzilishi
 
 ```
-├── server.ts                  Express server, AI endpointlari, Azure TTS
+├── server.ts                  Express server + Vercel kirish nuqtasi (default export)
 ├── auth.ts                    scrypt + HMAC autentifikatsiya, JSON saqlash
-├── api/index.ts               Vercel serverless kirish nuqtasi
-├── vercel.json                Vercel marshrutlari va build sozlamalari
+├── vercel.json                Vercel build buyrug'i
+├── public/                    Vite build natijasi (git'ga kirmaydi)
 ├── src/
 │   ├── App.tsx                Asosiy dashboard va marshrutlash
 │   ├── types.ts               Umumiy TypeScript tiplari
