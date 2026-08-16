@@ -22,6 +22,7 @@ export const BASE_UZ_DICTIONARY: Record<string, string> = {
   'nav.lab': 'Dars Laboratoriyasi',
   'nav.json_engine': 'JSON Dvigatel',
   'nav.stats': 'Mening Natijalarim',
+  'nav.exit': 'Bosh sahifaga chiqish',
 
   // Hero Section
   'hero.title': '20 Ta Hayotiy Til Ssenariylari',
@@ -302,6 +303,7 @@ export const BUILTIN_UI_TRANSLATIONS: Record<string, Record<string, string>> = {
     'nav.lab': 'Lesson Lab',
     'nav.json_engine': 'JSON Engine',
     'nav.stats': 'My Progress',
+    'nav.exit': 'Back to home',
     'hero.title': '20 Real-World Language Scenarios',
     'hero.subtitle': 'From local markets to IT interviews — every lesson is personalized to your profession and selected country language.',
     'hero.interactive_games': 'Interactive Games',
@@ -550,6 +552,7 @@ export const BUILTIN_UI_TRANSLATIONS: Record<string, Record<string, string>> = {
     'nav.lab': 'Лаборатория уроков',
     'nav.json_engine': 'JSON Движок',
     'nav.stats': 'Мой прогресс',
+    'nav.exit': 'На главную',
     'hero.title': '20 Жизненных Языковых Сценариев',
     'hero.subtitle': 'От восточного базара до IT-интервью — каждый урок адаптирован под вашу профессию и выбранную страну.',
     'hero.interactive_games': 'Интерактивные Игры',
@@ -798,6 +801,7 @@ export const BUILTIN_UI_TRANSLATIONS: Record<string, Record<string, string>> = {
     'nav.lab': 'Ders Laboratuvarı',
     'nav.json_engine': 'JSON Motoru',
     'nav.stats': 'İlerlemem',
+    'nav.exit': 'Ana sayfaya dön',
     'hero.title': '20 Gerçek Hayat Dil Senaryosu',
     'hero.subtitle': 'Kapalıçarşıdan teknik IT mülakatına kadar — her ders mesleğinize ve seçtiğiniz ülkenin diline göre uyarlanır.',
     'hero.interactive_games': 'İnteraktif Oyunlar',

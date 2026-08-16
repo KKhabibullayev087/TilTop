@@ -10,6 +10,7 @@ import {
   PanelLeftOpen,
   X,
   User,
+  LogOut,
 } from 'lucide-react';
 import { UserProfile } from '../types';
 import { PROFESSION_OPTIONS, PROFICIENCY_OPTIONS } from '../data/curriculum';
@@ -29,6 +30,7 @@ interface SidebarProps {
   onToggleCollapsed: () => void;
   mobileOpen: boolean;
   onCloseMobile: () => void;
+  onExit: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -43,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapsed,
   mobileOpen,
   onCloseMobile,
+  onExit,
 }) => {
   const { t } = useI18n();
 
@@ -255,6 +258,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   {currentProf.titleUz}
                 </span>
               </span>
+            </button>
+
+            {/* Back to the landing page. Progress stays put — this only
+                changes which screen the app opens on. */}
+            <button
+              type="button"
+              id="sidebar-exit-btn"
+              onClick={onExit}
+              title={t('nav.exit', 'Bosh sahifaga chiqish')}
+              aria-label={t('nav.exit', 'Bosh sahifaga chiqish')}
+              className={`flex items-center justify-center w-8 h-8 rounded-lg text-ink-subtle hover:text-danger hover:bg-danger-soft transition-colors cursor-pointer flex-shrink-0 ${collapsed ? 'lg:w-full' : ''}`}
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
 

@@ -39,7 +39,7 @@ import { I18nProvider, useI18n } from './utils/i18n';
 
 const SIDEBAR_COLLAPSED_KEY = 'tiltop_sidebar_collapsed';
 
-function TilTopDashboard() {
+function TilTopDashboard({ onExit }: { onExit: () => void }) {
   const { t } = useI18n();
 
   // 1. Persistent User Profile & Progress
@@ -299,6 +299,7 @@ function TilTopDashboard() {
         onToggleCollapsed={() => setSidebarCollapsed((v) => !v)}
         mobileOpen={mobileNavOpen}
         onCloseMobile={() => setMobileNavOpen(false)}
+        onExit={onExit}
       />
 
       {/* Content shifts to clear the fixed sidebar from lg up */}
@@ -600,11 +601,19 @@ function Gate() {
     setEntered(true);
   };
 
+  // Exit only sends the learner back to the landing page. Profile and progress
+  // are left untouched, so re-entering picks up exactly where they left off.
+  const exit = () => {
+    localStorage.removeItem(ENTERED_KEY);
+    setEntered(false);
+    window.scrollTo({ top: 0 });
+  };
+
   if (!entered) {
     return <LandingPage onGetStarted={enter} />;
   }
 
-  return <TilTopDashboard />;
+  return <TilTopDashboard onExit={exit} />;
 }
 
 export function App() {
