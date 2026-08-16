@@ -1,0 +1,6 @@
+{
+  "name": "TilTop - AI Language Learning Engine",
+  "description": "Gamified interactive language learning engine for Uzbek, English, Russian, and Korean across 20 immersive life scenarios with structured JSON curriculum, AI roleplay, quizzes, and XP rewards.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
